@@ -241,40 +241,79 @@ export function Projects() {
         ref={swapScopeRef}
         data-projects-reveal="2"
         data-project-swap-preset="cinematic"
-        className="relative overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03]"
+        className="scanlines-bg relative overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] shadow-[0_30px_90px_rgba(0,0,0,.5)]"
       >
-        {/* ================== BACKGROUND PREVIEW ================== */}
+        <div
+          className="pointer-events-none absolute left-0 top-0 z-[2] h-px w-full"
+          style={{
+            background:
+              "linear-gradient(90deg,transparent,rgba(168,85,247,.6) 40%,rgba(0,255,224,.4) 60%,transparent)",
+            opacity: 0.5,
+          }}
+        />
+
         <div className="pointer-events-none absolute inset-0">
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(135deg,rgba(168,85,247,.10) 0%,rgba(0,255,224,.05) 50%,transparent 100%)",
+            }}
+          />
+
           {project.preview ? (
             <div
               data-project-swap-bg
-              className="absolute inset-0 bg-cover bg-center opacity-55 transition-all duration-500"
+              className="absolute inset-0 bg-cover bg-center opacity-50 transition-all duration-500"
               style={{ backgroundImage: `url(${project.preview})` }}
             />
           ) : null}
 
-          {/* Dark cinematic overlay */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,transparent_0,rgba(0,0,0,.45)_55%,rgba(0,0,0,.85)_100%)]" />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(circle at 30% 20%,transparent 0,rgba(0,0,0,.45) 55%,rgba(0,0,0,.82) 100%)",
+            }}
+          />
 
-          {/* Grid */}
-          <div className="absolute inset-0 opacity-[0.05] [background-image:linear-gradient(rgba(255,255,255,.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.06)_1px,transparent_1px)] [background-size:40px_40px]" />
+          <div
+            className="absolute inset-0"
+            style={{
+              opacity: 0.07,
+              backgroundImage:
+                "linear-gradient(rgba(255,255,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px)",
+              backgroundSize: "40px 40px",
+            }}
+          />
 
-          {/* Scanlines */}
-          <div className="absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(255,255,255,.1)_1px,transparent_1px)] [background-size:100%_4px]" />
+          <div
+            className="absolute inset-0"
+            style={{
+              opacity: 0.08,
+              backgroundImage:
+                "linear-gradient(rgba(255,255,255,.1) 1px,transparent 1px)",
+              backgroundSize: "100% 4px",
+            }}
+          />
         </div>
 
-        {/* ================== CONTENT ================== */}
-        <div className="relative grid gap-12 p-8 md:p-12 lg:grid-cols-[1.15fr_.85fr]">
-          {/* LEFT SIDE */}
-          <div className="max-w-2xl">
+        <div className="relative grid gap-10 p-8 md:p-10 lg:min-h-[620px] lg:grid-cols-[1.15fr_.85fr] lg:gap-12">
+          <div className="flex max-w-[560px] flex-col lg:min-h-[520px]">
             <div
               data-projects-reveal="2"
               data-project-swap
-              className="mb-6 flex items-center gap-3"
+              className="mb-5 flex items-center gap-2.5"
             >
-              <span className="h-1.5 w-1.5 rounded-full bg-glowB/80" />
+              <span
+                className="h-1.5 w-1.5 flex-shrink-0 rounded-full"
+                style={{ background: "rgba(70,160,255,.8)" }}
+              />
               <span className="h-px flex-1 bg-white/10" />
-              <span className="text-[10px] tracking-[0.45em] text-white/45">
+              <span
+                className="font-mono text-[10px] tracking-[0.42em]"
+                style={{ color: "rgba(255,255,255,.42)" }}
+              >
                 {t.projects.activeFile}
               </span>
             </div>
@@ -282,7 +321,8 @@ export function Projects() {
             <h3
               data-projects-reveal="3"
               data-project-swap
-              className="text-3xl font-bold tracking-tight text-white md:text-4xl"
+              className="hud-title text-3xl font-bold leading-tight text-white/95 md:text-4xl"
+              style={{ textShadow: "0 0 20px rgba(168,85,247,.3)" }}
             >
               {project.title}
             </h3>
@@ -290,119 +330,199 @@ export function Projects() {
             <div
               data-projects-reveal="4"
               data-project-swap
-              className="mt-3 inline-flex items-center rounded-full border border-white/10 bg-black/30 px-3 py-1 text-xs tracking-[0.25em] text-white/60"
+              className="mt-3 inline-flex items-center border bg-black/30 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.25em]"
+              style={{
+                borderColor: "rgba(0,255,224,.22)",
+                color: "rgba(0,255,224,.68)",
+                clipPath:
+                  "polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)",
+              }}
             >
-              {project.subtitle}
+              {"\u25C8"} {project.subtitle}
             </div>
 
-            <p
-              data-projects-reveal="5"
-              data-project-swap
-              className="mt-6 text-sm leading-relaxed text-white/70 md:text-base"
-            >
-              {project.desc}
-            </p>
-
-            <div
-              data-projects-reveal="6"
-              data-project-swap
-              className="mt-4 rounded-xl border border-white/10 bg-black/25 p-4 text-sm text-white/72"
-            >
-              <span className="mr-2 text-[10px] uppercase tracking-[0.35em] text-white/50">
-                {t.projects.impact}
-              </span>
-              {project.impact}
+            <div className="mt-5">
+              <div
+                className="mb-1.5 font-mono text-[8px] tracking-[0.3em]"
+                style={{ color: "rgba(168,85,247,.5)" }}
+              >
+                // DESC
+              </div>
+              <p
+                data-projects-reveal="5"
+                data-project-swap
+                className="text-sm leading-relaxed text-white/70 md:text-base"
+              >
+                {project.desc}
+              </p>
             </div>
 
-            <div
-              data-projects-reveal="7"
-              data-project-swap
-              className="mt-6 flex flex-wrap gap-2"
-            >
-              {project.tags.map((tag) => (
+            <div className="mt-4">
+              <div
+                className="mb-1.5 font-mono text-[8px] tracking-[0.3em]"
+                style={{ color: "rgba(168,85,247,.5)" }}
+              >
+                // IMPACT
+              </div>
+              <div
+                data-projects-reveal="6"
+                data-project-swap
+                className="rounded-[10px] border border-white/10 bg-black/25 p-4 text-sm text-white/72"
+              >
                 <span
-                  key={tag}
-                  className="rounded-full border border-white/10 bg-white/[0.02] px-3 py-1 text-xs text-white/60"
+                  className="mr-2 font-mono text-[9px]"
+                  style={{ color: "rgba(255,255,255,.42)" }}
                 >
-                  {tag}
+                  {"\u25B8"}
                 </span>
-              ))}
+                {project.impact}
+              </div>
+            </div>
+
+            <div className="mt-5">
+              <div
+                className="mb-2 font-mono text-[8px] tracking-[0.3em]"
+                style={{ color: "rgba(168,85,247,.5)" }}
+              >
+                // STACK
+              </div>
+              <div
+                data-projects-reveal="7"
+                data-project-swap
+                className="flex flex-wrap gap-2"
+              >
+                {project.tags.map((tag, i) => (
+                  <span
+                    key={tag}
+                    className={i % 2 === 0 ? "hud-tag" : "hud-tag hud-tag-c"}
+                  >
+                    {"\u25C7"} {tag}
+                  </span>
+                ))}
+              </div>
             </div>
 
             <div
               data-projects-reveal="8"
               data-project-swap
-              className="mt-7 flex flex-wrap gap-3"
+              className="mt-7 flex flex-wrap gap-3 lg:mt-auto"
             >
-              <button className="rounded-full border border-glowB/45 bg-white/[0.04] px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/90 transition hover:bg-white/[0.08]">
-                {t.projects.viewCase}
+              <button className="hud-btn">
+                {"\u25C8"} {t.projects.viewCase}
               </button>
-              <button className="rounded-full border border-glowV/45 bg-[linear-gradient(180deg,rgba(140,90,255,0.2),rgba(140,90,255,0.08))] px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/95 transition hover:shadow-[0_0_20px_rgba(140,90,255,0.28)]">
-                {t.projects.github}
+              <button className="hud-btn hud-btn-p">
+                {"\u25C8"} {t.projects.github}
               </button>
             </div>
           </div>
 
-          {/* RIGHT HUD PANEL */}
           <div
             data-projects-reveal="6"
             data-project-swap
             data-project-swap-panel
-            className="relative rounded-3xl border border-white/10 bg-black/30 p-6"
+            className="relative self-start rounded-[20px] border border-white/10 bg-black/30 p-6 md:p-7 lg:min-h-[420px]"
+            style={{
+              clipPath:
+                "polygon(0% 0%,92% 0%,100% 8%,100% 100%,8% 100%,0% 92%)",
+            }}
           >
-            <div className="pointer-events-none absolute left-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-glowV/60 to-transparent" />
+            <div
+              className="pointer-events-none absolute left-0 top-0 h-px w-full"
+              style={{
+                background:
+                  "linear-gradient(90deg,transparent,rgba(168,85,247,.65) 55%,transparent)",
+              }}
+            />
 
             <div data-project-swap-panel-item>
-              <div className="text-[10px] tracking-[0.45em] text-white/45">
-                {t.projects.panelStatus}
+              <div
+                className="font-mono text-[8px] tracking-[0.38em]"
+                style={{ color: "rgba(255,255,255,.3)" }}
+              >
+                // {t.projects.panelStatus}
               </div>
-              <div className="mt-1 text-lg font-semibold text-white/85">
+              <div
+                className="mt-1 text-lg font-semibold"
+                style={{
+                  fontFamily: "'Rajdhani', sans-serif",
+                  color: "rgba(238,244,255,.85)",
+                }}
+              >
                 {t.projects.panelStatusValue}
               </div>
             </div>
 
-            <div
-              data-project-swap-panel-item
-              className="mt-6 space-y-3 text-sm"
-            >
-              <div className="flex justify-between">
-                <span className="text-white/50">{t.projects.category}</span>
-                <span className="text-white/75">
-                  {t.projects.categoryValue}
-                </span>
-              </div>
-
-              <div className="flex justify-between">
-                <span className="text-white/50">{t.projects.focus}</span>
-                <span className="text-white/75">{t.projects.focusValue}</span>
-              </div>
-
-              <div className="flex justify-between">
-                <span className="text-white/50">{t.projects.stack}</span>
-                <span className="text-white/75">
-                  {project.tags.slice(0, 2).join(" / ")}
-                </span>
-              </div>
+            <div data-project-swap-panel-item className="mt-6 flex flex-col">
+              {(
+                [
+                  {
+                    label: t.projects.category,
+                    value: t.projects.categoryValue,
+                  },
+                  { label: t.projects.focus, value: t.projects.focusValue },
+                  {
+                    label: t.projects.stack,
+                    value: project.tags.slice(0, 2).join(" / "),
+                  },
+                ] as { label: string; value: string }[]
+              ).map(({ label, value }) => (
+                <div
+                  key={label}
+                  className="relative flex items-center justify-between px-3 py-2 text-sm"
+                  style={{
+                    borderBottom: "1px solid rgba(168,85,247,.08)",
+                  }}
+                >
+                  <span
+                    className="absolute left-0 font-mono text-[8px]"
+                    style={{ color: "rgba(0,255,224,.3)" }}
+                  >
+                    {"\u25C2"}
+                  </span>
+                  <span
+                    className="pl-2 font-mono text-[9px] uppercase tracking-[0.2em]"
+                    style={{ color: "rgba(255,255,255,.38)" }}
+                  >
+                    {label}
+                  </span>
+                  <span
+                    className="font-mono text-[10px] tracking-[0.1em]"
+                    style={{ color: "rgba(238,244,255,.75)" }}
+                  >
+                    {value}
+                  </span>
+                </div>
+              ))}
             </div>
 
             <div
               data-project-swap-panel-item
-              className="my-6 h-px bg-white/10"
+              className="my-5 h-px"
+              style={{ background: "rgba(168,85,247,.14)" }}
             />
 
-            <div data-project-swap-panel-item className="text-xs text-white/60">
+            <div
+              data-project-swap-panel-item
+              className="text-xs leading-relaxed"
+              style={{ color: "rgba(214,225,248,.45)" }}
+            >
               {t.projects.helper}
             </div>
 
-            <div className="pointer-events-none absolute bottom-4 left-6 right-6 flex items-center gap-3 opacity-60">
+            <div className="pointer-events-none absolute bottom-4 left-6 right-6 flex items-center gap-3 opacity-55">
               <span className="h-px flex-1 bg-white/10" />
-              <span className="h-1 w-1 rounded-full bg-glowB/70" />
-              <span className="h-px w-10 bg-glowV/40" />
+              <span
+                className="h-1 w-1 rounded-full"
+                style={{ background: "rgba(70,160,255,.7)" }}
+              />
+              <span
+                className="h-px w-10"
+                style={{ background: "rgba(168,85,247,.4)" }}
+              />
             </div>
           </div>
         </div>
 
-        {/* ================== STEPPER ================== */}
         <div
           data-projects-reveal="9"
           className="relative border-t border-white/10 bg-black/40 px-6 py-6"
@@ -411,7 +531,7 @@ export function Projects() {
             total={projects.length}
             active={safeActive}
             onChange={setActive}
-            className="mx-auto max-w-[980px]"
+            className="mx-auto w-full max-w-[980px]"
           />
         </div>
       </div>

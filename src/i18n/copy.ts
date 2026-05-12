@@ -1,17 +1,6 @@
 export type Locale = "pt" | "en";
 
 type CopyShape = {
-  topbar: {
-    mission: string;
-    dossier: string;
-    statusLabel: string;
-    statusValue: string;
-    modeLabel: string;
-    modeValue: string;
-    themeLabel: string;
-    themeValue: string;
-    langLabel: string;
-  };
   boot: {
     mission: string;
     loading: string;
@@ -29,8 +18,11 @@ type CopyShape = {
     statusTitle: string;
     statusValue: string;
     age: string;
+    ageValue: string;
     location: string;
+    locationValue: string;
     specialty: string;
+    specialtyValue: string;
   };
   about: {
     title: string;
@@ -67,17 +59,6 @@ type CopyShape = {
 
 export const copy: Record<Locale, CopyShape> = {
   pt: {
-    topbar: {
-      mission: "Comando Central",
-      dossier: "Dossie do Candidato",
-      statusLabel: "Status",
-      statusValue: "Disponivel",
-      modeLabel: "Modo",
-      modeValue: "Portfolio",
-      themeLabel: "Tema",
-      themeValue: "HUD Cinematico",
-      langLabel: "Idioma",
-    },
     boot: {
       mission: "Comando Central",
       loading: "Carregando",
@@ -99,8 +80,11 @@ export const copy: Record<Locale, CopyShape> = {
       statusTitle: "STATUS",
       statusValue: "Disponivel para novas oportunidades",
       age: "Idade",
+      ageValue: "28 anos",
       location: "Local",
+      locationValue: "Colombo / PR",
       specialty: "Especialidade",
+      specialtyValue: "UI + Front-End",
     },
     about: {
       title: "Sobre",
@@ -163,17 +147,6 @@ export const copy: Record<Locale, CopyShape> = {
     },
   },
   en: {
-    topbar: {
-      mission: "Mission Control",
-      dossier: "Candidate Dossier",
-      statusLabel: "Status",
-      statusValue: "Available",
-      modeLabel: "Mode",
-      modeValue: "Portfolio",
-      themeLabel: "Theme",
-      themeValue: "Cinematic HUD",
-      langLabel: "Language",
-    },
     boot: {
       mission: "Mission Control",
       loading: "Loading",
@@ -191,8 +164,11 @@ export const copy: Record<Locale, CopyShape> = {
       statusTitle: "STATUS",
       statusValue: "Available for new opportunities",
       age: "Age",
+      ageValue: "28 years old",
       location: "Location",
+      locationValue: "Colombo / PR",
       specialty: "Specialty",
+      specialtyValue: "UI + Front-End",
     },
     about: {
       title: "About",

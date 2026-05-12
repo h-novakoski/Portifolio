@@ -3,10 +3,18 @@ import { useLanguage } from "../i18n/useLanguage";
 
 export function Hero() {
   const { t } = useLanguage();
+  const heroRows = [
+    { label: "AGE", value: "23_ANOS" },
+    { label: "LOCATION", value: "CURITIBA_PR" },
+    { label: "SPECIALTY", value: "FRONT_END" },
+    { label: "STATUS", value: "DISPONIVEL", accent: true },
+  ];
 
   return (
-    <section id="top" className="relative bg-ink text-white">
-      {/* Background glow */}
+    <section
+      id="top"
+      className="relative scroll-mt-[108px] bg-ink text-white xl:scroll-mt-[112px]"
+    >
       <div
         className="pointer-events-none absolute inset-0 opacity-70"
         style={{
@@ -18,102 +26,80 @@ export function Hero() {
       />
 
       <Container>
-        <div className="relative flex min-h-[74vh] items-center py-12 md:min-h-[78vh] md:py-14">
-          <div
-            data-hero-stage
-            className="grid items-center gap-12 lg:grid-cols-[1.15fr_.85fr]"
-          >
-            {/* LEFT SIDE */}
-            <div>
-              <div className="reveal-phase-1 mb-6 flex items-center gap-3">
-                <span className="h-px flex-1 bg-white/10" />
-                <span className="text-[10px] tracking-[0.45em] text-white/45">
-                  {t.hero.eyebrow}
+        <div className="relative flex min-h-[72vh] items-center pb-10 pt-20 md:min-h-[76vh] md:pb-12 md:pt-20">
+          <div data-hero-stage className="hero-preview-grid w-full">
+            <div className="max-w-[520px]">
+              <div data-hero-reveal="1" className="reveal-phase-1 hero-preview-eyebrow">
+                <span className="hero-preview-eyebrow-line" />
+                <span className="hero-preview-eyebrow-text">
+                  {"\u25C8"} MISSAO // DOSSIE OPERACIONAL
                 </span>
               </div>
 
-              <h1 className="reveal-phase-2 hud-title text-5xl font-bold tracking-tight md:text-7xl">
-                Higor Henrique
+              <h1 data-hero-reveal="2" className="reveal-phase-2 hero-preview-name">
+                HIGOR
+                <br />
+                HENRIQUE
               </h1>
 
-              <div className="reveal-phase-3 hud-title mt-2 text-4xl font-bold tracking-tight text-white/65 md:text-5xl">
-                {t.hero.role}
+              <div data-hero-reveal="3" className="reveal-phase-3 hero-preview-role">
+                // Front-End Developer
               </div>
 
-              <p className="reveal-phase-4 mt-6 max-w-xl text-sm leading-relaxed text-white/72 md:text-base">
-                {t.hero.desc}
+              <p data-hero-reveal="4" className="reveal-phase-4 hero-preview-desc">
+                I build interfaces focused on visual storytelling, performance,
+                and product clarity. Cinematic design with formal execution.
               </p>
 
-              <div className="reveal-phase-5 mt-8 flex flex-wrap gap-3">
-                <a
-                  href="#about"
-                  className="rounded-full border border-white/20 bg-white/[0.04] px-6 py-3 text-sm font-semibold text-white/90 transition hover:border-glowB/45 hover:bg-white/[0.08]"
-                >
-                  {t.hero.aboutCta}
+              <div data-hero-reveal="5" className="reveal-phase-5 btns-a mt-[22px]">
+                <a href="#about" className="btn-a">
+                  {"\u25C8"} {t.hero.aboutCta}
                 </a>
-                <a
-                  href="#projects"
-                  className="rounded-full border border-glowV/40 bg-[linear-gradient(180deg,rgba(140,90,255,0.16),rgba(140,90,255,0.05))] px-6 py-3 text-sm font-semibold text-white/95 transition hover:border-glowV/70 hover:shadow-[0_0_24px_rgba(140,90,255,.28)]"
-                >
-                  {t.hero.projectsCta}
+                <a href="#projects" className="btn-a p">
+                  {"\u25C8"} {t.hero.projectsCta}
                 </a>
               </div>
 
-              <div className="reveal-phase-6 mt-8 flex flex-wrap gap-2 text-[11px] tracking-[0.2em] text-white/62">
-                {t.hero.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1"
-                  >
-                    {tag}
+              <div data-hero-reveal="6" className="reveal-phase-6 tags-a mt-[18px]">
+                {[
+                  "UI ENGINEERING",
+                  "REACT + TS",
+                  "DESIGN DIGITAL",
+                  "TAILWIND",
+                ].map((tag, index) => (
+                  <span key={tag} className={index % 2 === 0 ? "tag-a" : "tag-a c"}>
+                    {"\u25C7"} {tag}
                   </span>
                 ))}
               </div>
             </div>
 
-            {/* RIGHT SIDE - HUD CARD */}
-            <div
-              className="reveal-phase-7 relative overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.025] p-6 shadow-[0_30px_90px_rgba(0,0,0,.55)]"
-              style={{
-                clipPath:
-                  "polygon(0% 0%, 94% 0%, 100% 12%, 100% 100%, 8% 100%, 0% 90%)",
-              }}
-            >
-              {/* Top glow line */}
-              <div className="pointer-events-none absolute left-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-glowV/60 to-transparent" />
+            <div data-hero-reveal="7" className="reveal-phase-7 hero-preview-panel">
+              <div className="hc-lbl">// STATUS OPERACIONAL</div>
+              <div className="hc-val mb-1">{t.hero.statusValue}</div>
 
-              {/* Header */}
-              <div>
-                <div className="text-[10px] tracking-[0.45em] text-white/45">
-                  {t.hero.statusTitle}
-                </div>
-                <div className="mt-1 text-lg font-semibold text-white/85">
-                  {t.hero.statusValue}
-                </div>
+              <div className="dot-a mb-1">
+                <span className="d" />
+                ONLINE // ABERTO A PROPOSTAS
               </div>
 
-              {/* Info Rows */}
-              <div className="mt-6 space-y-3 text-sm">
-                <div className="flex items-center justify-between gap-6">
-                  <span className="text-white/45">{t.hero.age}</span>
-                  <span className="text-white/75">28 anos</span>
-                </div>
+              <div className="hc-sep" />
 
-                <div className="flex items-center justify-between gap-6">
-                  <span className="text-white/45">{t.hero.location}</span>
-                  <span className="text-white/75">Colombo / PR</span>
-                </div>
-
-                <div className="flex items-center justify-between gap-6">
-                  <span className="text-white/45">{t.hero.specialty}</span>
-                  <span className="text-white/75">UI + Front-End</span>
-                </div>
+              <div className="rows-a">
+                {heroRows.map(({ label, value, accent }) => (
+                  <div key={label} className="row-a">
+                    <span className="rl-a">{label}</span>
+                    <span className={accent ? "rv-a hero-preview-accent" : "rv-a"}>
+                      {value}
+                    </span>
+                  </div>
+                ))}
               </div>
 
-              {/* Bottom HUD line */}
-              <div className="pointer-events-none absolute bottom-4 left-6 right-6 flex items-center gap-3 opacity-60">
-                <span className="h-px flex-1 bg-white/10" />
-                <span className="h-px w-10 bg-glowV/40" />
+              <div className="hc-foot">
+                <div className="fl" />
+                <div className="fd" />
+                <div className="fs" />
               </div>
             </div>
           </div>

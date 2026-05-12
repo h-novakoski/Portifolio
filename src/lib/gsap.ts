@@ -4,41 +4,61 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 const SELECTORS = {
   heroSection: "#top",
   heroStage: "[data-hero-stage]",
+  heroReveal: "[data-hero-reveal]",
   aboutSection: "#about",
   projectsSection: "#projects",
-  aboutReveal: "[data-about-reveal]",
-  projectsReveal: "[data-projects-reveal]",
+  aboutReveal: "[data-about-reveal]:not([data-reveal-decor])",
+  projectsReveal: "[data-projects-reveal]:not([data-reveal-decor])",
   reveal: "[data-reveal]",
   parallax: "[data-parallax]",
 };
 
-const HERO_EXIT = {
-  start: "top top",
-  end: "bottom 34%",
-  scrub: 0.9,
-  y: -14,
-  scale: 0.992,
-};
-
+const ABOUT_TOGGLE_ACTIONS = "play reverse play reverse";
+const PROJECTS_TOGGLE_ACTIONS = "play none none reverse";
 const STAGED_REVEAL = {
+  hero: {
+    start: "top 18%",
+    end: "bottom 26%",
+    duration: 0.74,
+    phaseStep: 0.1,
+    initialX: 16,
+    initialScale: 1,
+    toggleActions: ABOUT_TOGGLE_ACTIONS,
+  },
   about: {
     start: "top 66%",
-    fallbackEnd: "bottom 30%",
-    projectsEnd: "top 86%",
-    duration: 0.72,
-    phaseStep: 0.09,
-    initialX: 22,
-    initialScale: 1.004,
+    end: "bottom 24%",
+    duration: 0.76,
+    phaseStep: 0.1,
+    initialX: 16,
+    initialScale: 1,
+    toggleActions: ABOUT_TOGGLE_ACTIONS,
   },
   projects: {
     start: "top 48%",
     end: "bottom 34%",
-    duration: 0.82,
-    phaseStep: 0.14,
-    baseDelay: 0.85,
-    initialX: 20,
-    initialScale: 1.003,
+    duration: 0.78,
+    phaseStep: 0.1,
+    baseDelay: 0.3,
+    initialX: 14,
+    initialScale: 1,
+    toggleActions: PROJECTS_TOGGLE_ACTIONS,
   },
+};
+
+type StagedRevealConfig = {
+  section: HTMLElement;
+  selector: string;
+  datasetKey: "heroReveal" | "aboutReveal" | "projectsReveal";
+  start: string;
+  end: string;
+  duration: number;
+  phaseStep: number;
+  initialX: number;
+  initialScale: number;
+  toggleActions: string;
+  baseDelay?: number;
+  playOnInitAtTop?: boolean;
 };
 
 function getSection(path: string) {
@@ -74,6 +94,7 @@ function setRevealInitialState(
 
 function revealAllForReducedMotion() {
   const staticRevealTargets = [
+    ...gsap.utils.toArray<HTMLElement>(SELECTORS.heroReveal),
     ...gsap.utils.toArray<HTMLElement>(SELECTORS.aboutReveal),
     ...gsap.utils.toArray<HTMLElement>(SELECTORS.projectsReveal),
     ...gsap.utils.toArray<HTMLElement>(SELECTORS.reveal),
@@ -89,12 +110,74 @@ function revealAllForReducedMotion() {
   }
 }
 
+function createStagedRevealTimeline(config: StagedRevealConfig) {
+  const {
+    section,
+    selector,
+    datasetKey,
+    start,
+    end,
+    duration,
+    phaseStep,
+    initialX,
+    initialScale,
+    toggleActions,
+    baseDelay = 0,
+    playOnInitAtTop = false,
+  } = config;
+
+  const items = sortByPhase(
+    gsap.utils.toArray<HTMLElement>(selector, section),
+    datasetKey,
+  );
+
+  if (!items.length) return;
+
+  setRevealInitialState(items, initialX, initialScale);
+
+  const timeline = gsap
+    .timeline({
+      defaults: { overwrite: "auto" },
+      scrollTrigger: {
+        trigger: section,
+        start,
+        end,
+        toggleActions,
+        fastScrollEnd: true,
+        invalidateOnRefresh: true,
+      },
+    })
+    .to(items, {
+      autoAlpha: 1,
+      x: 0,
+      duration,
+      ease: "power3.out",
+      stagger: {
+        each: 0,
+        from: 0,
+        amount: 0,
+        grid: "auto",
+      },
+      delay: (_index, target) =>
+        baseDelay +
+        Number((target as HTMLElement).dataset[datasetKey] ?? "0") * phaseStep,
+    });
+
+  const sectionBounds = section.getBoundingClientRect();
+  const isInitiallyVisible =
+    sectionBounds.top < window.innerHeight * 0.92 && sectionBounds.bottom > 0;
+
+  if (playOnInitAtTop && isInitiallyVisible) {
+    timeline.play(0);
+  }
+}
+
 export function setupScrollFX() {
   gsap.registerPlugin(ScrollTrigger);
 
   ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
   gsap.killTweensOf(
-    `${SELECTORS.reveal}, ${SELECTORS.aboutReveal}, ${SELECTORS.projectsReveal}`,
+    `${SELECTORS.heroReveal}, ${SELECTORS.reveal}, ${SELECTORS.aboutReveal}, ${SELECTORS.projectsReveal}`,
   );
 
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -108,7 +191,23 @@ export function setupScrollFX() {
   const aboutSection = getSection(SELECTORS.aboutSection);
   const projectsSection = getSection(SELECTORS.projectsSection);
 
-  if (heroSection && heroStage) {
+  if (heroSection) {
+    createStagedRevealTimeline({
+      section: heroSection,
+      selector: SELECTORS.heroReveal,
+      datasetKey: "heroReveal",
+      start: STAGED_REVEAL.hero.start,
+      end: STAGED_REVEAL.hero.end,
+      duration: STAGED_REVEAL.hero.duration,
+      phaseStep: STAGED_REVEAL.hero.phaseStep,
+      initialX: STAGED_REVEAL.hero.initialX,
+      initialScale: STAGED_REVEAL.hero.initialScale,
+      toggleActions: STAGED_REVEAL.hero.toggleActions,
+      playOnInitAtTop: true,
+    });
+  }
+
+  if (heroStage) {
     gsap.set(heroStage, {
       autoAlpha: 1,
       x: 0,
@@ -116,114 +215,37 @@ export function setupScrollFX() {
       scale: 1,
       force3D: true,
     });
-
-    gsap.to(heroStage, {
-      autoAlpha: 0,
-      y: -14,
-      scale: 0.992,
-      ease: "none",
-      overwrite: "auto",
-      scrollTrigger: {
-        trigger: heroSection,
-        start: HERO_EXIT.start,
-        end: HERO_EXIT.end,
-        scrub: HERO_EXIT.scrub,
-        invalidateOnRefresh: true,
-      },
-    });
   }
 
   if (aboutSection) {
-    const aboutItems = sortByPhase(
-      gsap.utils.toArray<HTMLElement>(SELECTORS.aboutReveal, aboutSection),
-      "aboutReveal",
-    );
-
-    if (aboutItems.length) {
-      setRevealInitialState(
-        aboutItems,
-        STAGED_REVEAL.about.initialX,
-        STAGED_REVEAL.about.initialScale,
-      );
-
-      gsap
-        .timeline({
-          defaults: { overwrite: "auto" },
-          scrollTrigger: {
-            trigger: aboutSection,
-            start: STAGED_REVEAL.about.start,
-            endTrigger: projectsSection ?? aboutSection,
-            end: projectsSection
-              ? STAGED_REVEAL.about.projectsEnd
-              : STAGED_REVEAL.about.fallbackEnd,
-            toggleActions: "play reverse play reverse",
-            invalidateOnRefresh: true,
-          },
-        })
-        .to(aboutItems, {
-          autoAlpha: 1,
-          x: 0,
-          scale: 1,
-          duration: STAGED_REVEAL.about.duration,
-          ease: "power3.out",
-          stagger: {
-            each: 0,
-            from: 0,
-            amount: 0,
-            grid: "auto",
-          },
-          delay: (_index, target) =>
-            Number((target as HTMLElement).dataset.aboutReveal ?? "0") *
-            STAGED_REVEAL.about.phaseStep,
-        });
-    }
+    createStagedRevealTimeline({
+      section: aboutSection,
+      selector: SELECTORS.aboutReveal,
+      datasetKey: "aboutReveal",
+      start: STAGED_REVEAL.about.start,
+      end: STAGED_REVEAL.about.end,
+      duration: STAGED_REVEAL.about.duration,
+      phaseStep: STAGED_REVEAL.about.phaseStep,
+      initialX: STAGED_REVEAL.about.initialX,
+      initialScale: STAGED_REVEAL.about.initialScale,
+      toggleActions: STAGED_REVEAL.about.toggleActions,
+    });
   }
 
   if (projectsSection) {
-    const projectsItems = sortByPhase(
-      gsap.utils.toArray<HTMLElement>(
-        SELECTORS.projectsReveal,
-        projectsSection,
-      ),
-      "projectsReveal",
-    );
-
-    if (projectsItems.length) {
-      setRevealInitialState(
-        projectsItems,
-        STAGED_REVEAL.projects.initialX,
-        STAGED_REVEAL.projects.initialScale,
-      );
-
-      gsap
-        .timeline({
-          defaults: { overwrite: "auto" },
-          scrollTrigger: {
-            trigger: projectsSection,
-            start: STAGED_REVEAL.projects.start,
-            end: STAGED_REVEAL.projects.end,
-            toggleActions: "play reverse play reverse",
-            invalidateOnRefresh: true,
-          },
-        })
-        .to(projectsItems, {
-          autoAlpha: 1,
-          x: 0,
-          scale: 1,
-          duration: STAGED_REVEAL.projects.duration,
-          ease: "power3.out",
-          stagger: {
-            each: 0,
-            from: 0,
-            amount: 0,
-            grid: "auto",
-          },
-          delay: (_index, target) =>
-            STAGED_REVEAL.projects.baseDelay +
-            Number((target as HTMLElement).dataset.projectsReveal ?? "0") *
-              STAGED_REVEAL.projects.phaseStep,
-        });
-    }
+    createStagedRevealTimeline({
+      section: projectsSection,
+      selector: SELECTORS.projectsReveal,
+      datasetKey: "projectsReveal",
+      start: STAGED_REVEAL.projects.start,
+      end: STAGED_REVEAL.projects.end,
+      duration: STAGED_REVEAL.projects.duration,
+      phaseStep: STAGED_REVEAL.projects.phaseStep,
+      initialX: STAGED_REVEAL.projects.initialX,
+      initialScale: STAGED_REVEAL.projects.initialScale,
+      toggleActions: STAGED_REVEAL.projects.toggleActions,
+      baseDelay: STAGED_REVEAL.projects.baseDelay,
+    });
   }
 
   // Reveal cinematografico (fade + slide + zoom-in suave)
